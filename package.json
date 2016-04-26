@@ -9,11 +9,14 @@
   "repository": "https://github.com/colynb/gulp-swig",
   "author": "Colyn Brown <colyn.brown@gmail.com>",
   "dependencies": {
-    "event-stream": "~3.0.15",
     "clone": "~0.1.9",
+    "event-stream": "~3.0.15",
+    "fs": "0.0.2",
+    "gulp": "~3.5.1",
     "gulp-util": "~2.2.14",
-    "swig": "1.4.*",
-    "gulp": "~3.5.1"
+    "node-cache": "^3.2.1",
+    "path": "^0.12.7",
+    "swig": "1.4.*"
   },
   "main": "index.js",
   "engines": {

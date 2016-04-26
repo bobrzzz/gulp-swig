@@ -6,6 +6,10 @@ var ext = gutil.replaceExtension;
 var PluginError = gutil.PluginError;
 var fs = require('fs');
 var path = require('path');
+var stylebundler = require("swig-stylebundler-loader");
+var NodeCache = require( "node-cache" );
+
+
 
 function extend(target) {
   'use strict';
@@ -23,8 +27,13 @@ function extend(target) {
 module.exports = function(options) {
   'use strict';
 
+  //console.log(options);
+
   var opts = options ? clone(options) : {};
   opts.ext = opts.ext || ".html";
+  opts.cacheBuster = opts.cacheBuster || false;
+
+
 
   if (opts.defaults) {
     swig.setDefaults(opts.defaults);
@@ -35,6 +44,9 @@ module.exports = function(options) {
   }
 
   function gulpswig(file, callback) {
+
+
+
 
     var data = opts.data || {}, jsonPath;
 
@@ -61,9 +73,56 @@ module.exports = function(options) {
 
     try {
 
+      var myCache = new NodeCache();
+      //console.log(myCache);
       var _swig = opts.varControls ? new swig.Swig(opts) : swig;
+
+      //console.log(opts.cacheBuster);
+      if(!opts.cacheBuster){
+        //console.log("custom loader");
+        _swig.setDefaults({ loader: stylebundler("", "", file.path, myCache) });
+      }
+
+      console.log("----------------------------");
       var tpl = _swig.compile(String(file.contents), {filename: file.path});
+      //console.log("****************************");
+      //console.log(tpl);
+      if(opts.cacheBuster){
+        var stylebase = path.basename(file.path, '.tp.html');
+
+        console.log("STYLE" + stylebase);
+        console.log(opts.cacheBuster.manifest);
+
+        var styleName = opts.baseCss + opts.cacheBuster.manifest[stylebase + "/" + stylebase + ".css"] ;
+        var styleSymbol = opts.baseCss + opts.cacheBuster.manifest["symbols.css"] ;
+        console.log("buster " + styleName);
+
+      }else if(opts.cacheBuster === false){
+        var stylebase = path.basename(file.path, '.tp.html');
+
+        var styleName = opts.baseCss + stylebase + "/" + stylebase + ".css" ;
+        var styleSymbol = opts.baseCss + "symbols.css" ;
+        var baseJs = opts.baseJs + "main.min.js";
+        var templateJs = opts.baseJs + stylebase + "/" + stylebase + ".js";
+        //var styleName = path.basename(file.path, '.tp.html') + ".css";
+
+      }
+
+
+
+      if(!/\.ch\.|\.sn\./i.test(file.path))
+        data.styleName = styleName;
+
+      data.styleSymbol = styleSymbol;
+      data.baseScript = baseJs;
+      data.templateScript = templateJs;
+      //console.log( data );
       var compiled = tpl(data);
+      //console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+      stylebundler().build(myCache, "generated");
+
+      //console.log("end");
 
       file.path = ext(file.path, opts.ext);
       file.contents = new Buffer(compiled);
