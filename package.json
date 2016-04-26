@@ -16,7 +16,8 @@
     "gulp-util": "~2.2.14",
     "node-cache": "^3.2.1",
     "path": "^0.12.7",
-    "swig": "1.4.*"
+    "swig": "1.4.*",
+    "swig-stylebundler-loader": "^1.0.0"
   },
   "main": "index.js",
   "engines": {
