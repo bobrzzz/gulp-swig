@@ -1,13 +1,13 @@
 {
-  "name": "gulp-swig",
+  "name": "gulp-swig-stylebundler",
   "version": "0.8.0",
-  "description": "Swig Plugin for Gulp",
+  "description": "Swig Plugin for Gulp & Modx Dev",
   "keywords": [
     "gulpplugin",
     "swig"
   ],
   "repository": "https://github.com/colynb/gulp-swig",
-  "author": "Colyn Brown <colyn.brown@gmail.com>",
+  "author": "Koshal Gleb <colyn.brown@gmail.com>",
   "dependencies": {
     "clone": "~0.1.9",
     "event-stream": "~3.0.15",
